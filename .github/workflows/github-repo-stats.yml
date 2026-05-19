@@ -1,0 +1,35 @@
+name: github-repo-stats
+
+on:
+  schedule:
+    # 매일 23:55 UTC (= 08:55 KST) 실행
+    - cron: "55 23 * * *"
+  workflow_dispatch:
+
+jobs:
+  stats:
+    runs-on: ubuntu-22.04
+    strategy:
+      # 동일 데이터 브랜치에 동시 push 충돌 방지
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        repository:
+          - ing-gom/sts2-card-advisor
+          - ing-gom/sts2-combat-ai
+          - ing-gom/Sts2SkinManager
+          - ing-gom/sts2-game-speed
+          - ing-gom/sts2-undo-mod
+          - ing-gom/claude-mod-skills
+          - ing-gom/Sts2HostObserver
+          - ing-gom/Sts2MultiplayerSync
+          - ing-gom/Sts2SilkenTressBackport
+          - ing-gom/sts2-potion-drop-chance
+          - ing-gom/sts2-orb-layout
+    name: ${{ matrix.repository }}
+    steps:
+      - uses: jgehrcke/github-repo-stats@RELEASE
+        with:
+          repository: ${{ matrix.repository }}
+          ghtoken: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+          databranch: github-repo-stats
