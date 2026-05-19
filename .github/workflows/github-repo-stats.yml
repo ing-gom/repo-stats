@@ -33,3 +33,37 @@ jobs:
           repository: ${{ matrix.repository }}
           ghtoken: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
           databranch: github-repo-stats
+
+  aggregate-index:
+    needs: stats
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout master (for script)
+        uses: actions/checkout@v4
+
+      - name: Checkout data branch
+        uses: actions/checkout@v4
+        with:
+          ref: github-repo-stats
+          path: data
+
+      - name: Generate index.html
+        working-directory: data
+        env:
+          GH_TOKEN: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+        run: python ../scripts/generate_index.py
+
+      - name: Commit and push
+        working-directory: data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "no changes to index.html"
+          else
+            git commit -m "ci: regenerate aggregate index"
+            git push
+          fi
