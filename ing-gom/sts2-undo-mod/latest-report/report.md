@@ -1,5 +1,5 @@
 % Statistics for ing-gom/sts2-undo-mod
-% Generated for [ing-gom/sts2-undo-mod](https://github.com/ing-gom/sts2-undo-mod) with [jgehrcke/github-repo-stats](https://github.com/jgehrcke/github-repo-stats) at 2026-05-20 01:28 UTC.
+% Generated for [ing-gom/sts2-undo-mod](https://github.com/ing-gom/sts2-undo-mod) with [jgehrcke/github-repo-stats](https://github.com/jgehrcke/github-repo-stats) at 2026-05-20 02:15 UTC.
 
 
 ## Views
@@ -78,7 +78,7 @@ Top 15 referrers: 01: `nexusmods.com`, 02: `github.com`, 03: `Google`, 04: `gall
 
 <div id="chart_paths_top_n_alltime" class="full-width-chart"></div>
 
-Top 15 paths: 01: `/`, 02: `/tree/main/Sts2UndoModCode`, 03: `/blob/main/README.ko.md`, 04: `/releases/tag/v0.0.7`, 05: `/tree/main`, 06: `/releases/tag/v0.0.8`, 07: `/issues/1`, 08: `/tree/main/release-beta`, 09: `/releases`, 10: `/issues`
+Top 15 paths: 01: `/`, 02: `/tree/main/Sts2UndoModCode`, 03: `/blob/main/README.ko.md`, 04: `/releases/tag/v0.0.7`, 05: `/tree/main`, 06: `/releases/tag/v0.0.8`, 07: `/issues/1`, 08: `/releases`, 09: `/tree/main/release-beta`, 10: `/issues`
 
 
 <script type="text/javascript">
