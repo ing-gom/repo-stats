@@ -8,7 +8,22 @@
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
          max-width: 1200px; margin: 2em auto; padding: 0 1em; color: #1f2328; }
   h1 { font-size: 1.5em; margin-bottom: 0.2em; }
+  h2 { font-size: 1.05em; margin: 2em 0 0.6em; color: #1f2328; }
   .updated { color: #59636e; font-size: 0.9em; margin-bottom: 1.5em; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 12px; margin-bottom: 1.6em; }
+  .card { padding: 12px 14px; border: 1px solid #d1d9e0; border-radius: 6px; background: #ffffff; }
+  .card .label { color: #59636e; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.04em; }
+  .card .value { font-size: 1.5em; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .controls { display: flex; gap: 16px; align-items: center; margin-bottom: 0.6em;
+              font-size: 0.9em; flex-wrap: wrap; }
+  .controls label { color: #59636e; }
+  .controls select { padding: 4px 8px; border: 1px solid #d1d9e0; border-radius: 4px; background: #ffffff; }
+  .controls button { padding: 4px 10px; border: 1px solid #d1d9e0; border-radius: 4px;
+                     background: #ffffff; cursor: pointer; font: inherit; color: inherit; }
+  .controls button.active { background: #ddf4ff; border-color: #0969da; }
+  .chart-wrap { position: relative; height: 360px; margin-bottom: 1em; }
+  .chart-wrap.bar { height: 420px; }
   table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
   th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #d1d9e0; }
   th { background: #f6f8fa; font-weight: 600; font-size: 0.85em; color: #59636e; }
@@ -22,7 +37,48 @@
 </head>
 <body>
 <h1>ing-gom repository traffic</h1>
-<p class="updated">Updated 2026-05-19 17:29 UTC · 14d 윈도우는 GitHub API 의 최대 보존 기간 · total 은 수집 시작일 이후 누적</p>
+<p class="updated">Updated 2026-05-20 01:32 UTC · 14d 윈도우는 GitHub API 최대 보존 기간 · total 은 수집 시작일 이후 누적</p>
+
+<div class="summary">
+  <div class="card"><div class="label">Repos</div><div class="value">11</div></div>
+  <div class="card"><div class="label">Views (14d)</div><div class="value">1,142</div></div>
+  <div class="card"><div class="label">Clones (14d)</div><div class="value">2,744</div></div>
+  <div class="card"><div class="label">Views (total)</div><div class="value">1,242</div></div>
+  <div class="card"><div class="label">Clones (total)</div><div class="value">2,826</div></div>
+  <div class="card"><div class="label">★ Total</div><div class="value">1</div></div>
+</div>
+
+<h2>Daily trend</h2>
+<div class="controls">
+  <label>Metric
+    <select id="trendMetric">
+      <option value="views_total">Views (total)</option>
+      <option value="views_unique">Views (unique)</option>
+      <option value="clones_total">Clones (total)</option>
+      <option value="clones_unique">Clones (unique)</option>
+    </select>
+  </label>
+  <button id="toggleSmooth" type="button">7-day rolling avg</button>
+  <button id="toggleStack" type="button">Stacked</button>
+</div>
+<div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+
+<h2>Repo totals</h2>
+<div class="controls">
+  <label>Sort by
+    <select id="totalMetric">
+      <option value="recent_views">Views (14d)</option>
+      <option value="recent_unique_views">Unique views (14d)</option>
+      <option value="recent_clones">Clones (14d)</option>
+      <option value="total_views">Views (total)</option>
+      <option value="total_clones">Clones (total)</option>
+      <option value="stars">★ Stars</option>
+    </select>
+  </label>
+</div>
+<div class="chart-wrap bar"><canvas id="totalsChart"></canvas></div>
+
+<h2>Detail</h2>
 <table>
 <thead>
 <tr>
@@ -38,21 +94,132 @@
 </thead>
 <tbody>
 <tr><td><a href='ing-gom/Sts2SkinManager/latest-report/report.html'>Sts2SkinManager</a></td><td class='num'>633</td><td class='num'>246</td><td class='num'>299</td><td class='num'>633</td><td class='num'>299</td><td class='num'>0</td><td class='desc'>A Slay the Spire 2 mod that lets you switch between character skin mods at runtime via an in-game dropdown</td></tr>
-<tr><td><a href='ing-gom/sts2-card-advisor/latest-report/report.html'>sts2-card-advisor</a></td><td class='num'>286</td><td class='num'>103</td><td class='num'>188</td><td class='num'>320</td><td class='num'>191</td><td class='num'>1</td><td class='desc'>STS2 Card Advisor Dashboard</td></tr>
-<tr><td><a href='ing-gom/sts2-undo-mod/latest-report/report.html'>sts2-undo-mod</a></td><td class='num'>119</td><td class='num'>30</td><td class='num'>69</td><td class='num'>157</td><td class='num'>70</td><td class='num'>0</td><td class='desc'>Undo mod for Slay the Spire 2 - rewind card plays and turns mid-combat</td></tr>
+<tr><td><a href='ing-gom/sts2-card-advisor/latest-report/report.html'>sts2-card-advisor</a></td><td class='num'>265</td><td class='num'>97</td><td class='num'>187</td><td class='num'>320</td><td class='num'>191</td><td class='num'>1</td><td class='desc'>STS2 Card Advisor Dashboard</td></tr>
+<tr><td><a href='ing-gom/sts2-undo-mod/latest-report/report.html'>sts2-undo-mod</a></td><td class='num'>117</td><td class='num'>28</td><td class='num'>39</td><td class='num'>157</td><td class='num'>70</td><td class='num'>0</td><td class='desc'>Undo mod for Slay the Spire 2 - rewind card plays and turns mid-combat</td></tr>
 <tr><td><a href='ing-gom/sts2-potion-drop-chance/latest-report/report.html'>sts2-potion-drop-chance</a></td><td class='num'>54</td><td class='num'>15</td><td class='num'>147</td><td class='num'>54</td><td class='num'>147</td><td class='num'>0</td><td class='desc'>Show potion drop probability per map node for Slay the Spire 2 — pity-aware, relic-aware, client-side only</td></tr>
-<tr><td><a href='ing-gom/sts2-orb-layout/latest-report/report.html'>sts2-orb-layout</a></td><td class='num'>26</td><td class='num'>13</td><td class='num'>53</td><td class='num'>26</td><td class='num'>53</td><td class='num'>0</td><td class='desc'>Reshape Defect orb-slot layout into any free-form curve. Click on the curve to add waypoints, drag to shape.</td></tr>
 <tr><td><a href='ing-gom/Sts2SilkenTressBackport/latest-report/report.html'>Sts2SilkenTressBackport</a></td><td class='num'>25</td><td class='num'>15</td><td class='num'>13</td><td class='num'>25</td><td class='num'>13</td><td class='num'>0</td><td class='desc'>Slay the Spire 2 mod — backports the beta Silken Tress relic (and its Glam enchantment behavior) to the current stable branch. Available naturally at Neow.</td></tr>
+<tr><td><a href='ing-gom/sts2-orb-layout/latest-report/report.html'>sts2-orb-layout</a></td><td class='num'>21</td><td class='num'>10</td><td class='num'>9</td><td class='num'>26</td><td class='num'>53</td><td class='num'>0</td><td class='desc'>Reshape Defect orb-slot layout into any free-form curve. Click on the curve to add waypoints, drag to shape.</td></tr>
 <tr><td><a href='ing-gom/sts2-combat-ai/latest-report/report.html'>sts2-combat-ai</a></td><td class='num'>17</td><td class='num'>4</td><td class='num'>1920</td><td class='num'>17</td><td class='num'>1920</td><td class='num'>0</td><td class='desc'>Combat-decision AI core for Slay the Spire 2 — planner / simulator / scorer (originally scaffolded as Sts2VakuuPlus)</td></tr>
-<tr><td><a href='ing-gom/claude-mod-skills/latest-report/report.html'>claude-mod-skills</a></td><td class='num'>4</td><td class='num'>3</td><td class='num'>52</td><td class='num'>4</td><td class='num'>52</td><td class='num'>0</td><td class='desc'>Claude Code skills for C#/Harmony game mod authors — hot-path perf, Harmony patch safety, build/hot-reload loop</td></tr>
+<tr><td><a href='ing-gom/claude-mod-skills/latest-report/report.html'>claude-mod-skills</a></td><td class='num'>4</td><td class='num'>3</td><td class='num'>49</td><td class='num'>4</td><td class='num'>52</td><td class='num'>0</td><td class='desc'>Claude Code skills for C#/Harmony game mod authors — hot-path perf, Harmony patch safety, build/hot-reload loop</td></tr>
 <tr><td><a href='ing-gom/Sts2MultiplayerSync/latest-report/report.html'>Sts2MultiplayerSync</a></td><td class='num'>4</td><td class='num'>2</td><td class='num'>50</td><td class='num'>4</td><td class='num'>50</td><td class='num'>0</td><td class='desc'>STS2 multiplayer mod-sync bridge: bypass mod mismatch on join + warn host about gameplay-affecting mods + show client which mods to install/disable</td></tr>
 <tr><td><a href='ing-gom/Sts2HostObserver/latest-report/report.html'>Sts2HostObserver</a></td><td class='num'>2</td><td class='num'>1</td><td class='num'>31</td><td class='num'>2</td><td class='num'>31</td><td class='num'>0</td><td class='desc'>Run a STS2 multiplayer lobby as a dedicated host — open a session, watch up to 4 clients play, never sit in a player slot yourself. Harmony patches skip host self-add and null-safe LocalContext.GetMe so the engine doesn't trip when localPlayerId has no matching Player.</td></tr>
 <tr><td><a href='ing-gom/sts2-game-speed/latest-report/report.html'>sts2-game-speed</a></td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='desc'>Slay the Spire 2 mod that scales animation speed from 1.0x to 3.0x via a ModConfig slider (default 1.5x). Faster card play / attacks / draws — same card effects, RNG, and outcomes.</td></tr>
 </tbody>
 </table>
+
 <footer>
   Powered by <a href="https://github.com/jgehrcke/github-repo-stats">jgehrcke/github-repo-stats</a> ·
   Source: <a href="https://github.com/ing-gom/repo-stats">ing-gom/repo-stats</a>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script id="repo-data" type="application/json">[{"repo": "ing-gom/Sts2SkinManager", "name": "Sts2SkinManager", "color": "#1a7f37", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 84, "clones_total": 112, "views_unique": 42, "clones_unique": 74}, {"date": "2026-05-13", "views_total": 53, "clones_total": 36, "views_unique": 37, "clones_unique": 18}, {"date": "2026-05-14", "views_total": 58, "clones_total": 56, "views_unique": 26, "clones_unique": 31}, {"date": "2026-05-15", "views_total": 169, "clones_total": 46, "views_unique": 34, "clones_unique": 28}, {"date": "2026-05-16", "views_total": 99, "clones_total": 9, "views_unique": 36, "clones_unique": 9}, {"date": "2026-05-17", "views_total": 113, "clones_total": 36, "views_unique": 48, "clones_unique": 19}, {"date": "2026-05-18", "views_total": 57, "clones_total": 4, "views_unique": 23, "clones_unique": 3}], "stars": 0, "forks": 1, "recent_views": 633, "recent_unique_views": 246, "recent_clones": 299, "recent_unique_clones": 182, "total_views": 633, "total_clones": 299}, {"repo": "ing-gom/sts2-card-advisor", "name": "sts2-card-advisor", "color": "#0969da", "daily": [{"date": "2026-05-05", "views_total": 34, "clones_total": 3, "views_unique": 16, "clones_unique": 3}, {"date": "2026-05-06", "views_total": 21, "clones_total": 1, "views_unique": 6, "clones_unique": 1}, {"date": "2026-05-07", "views_total": 30, "clones_total": 65, "views_unique": 8, "clones_unique": 30}, {"date": "2026-05-08", "views_total": 46, "clones_total": 10, "views_unique": 10, "clones_unique": 10}, {"date": "2026-05-09", "views_total": 33, "clones_total": 0, "views_unique": 12, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 25, "clones_total": 0, "views_unique": 11, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 16, "clones_total": 71, "views_unique": 8, "clones_unique": 37}, {"date": "2026-05-12", "views_total": 7, "clones_total": 7, "views_unique": 5, "clones_unique": 7}, {"date": "2026-05-13", "views_total": 20, "clones_total": 17, "views_unique": 6, "clones_unique": 7}, {"date": "2026-05-14", "views_total": 0, "clones_total": 2, "views_unique": 0, "clones_unique": 2}, {"date": "2026-05-15", "views_total": 21, "clones_total": 3, "views_unique": 9, "clones_unique": 3}, {"date": "2026-05-16", "views_total": 27, "clones_total": 0, "views_unique": 11, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 20, "clones_total": 2, "views_unique": 9, "clones_unique": 1}, {"date": "2026-05-18", "views_total": 20, "clones_total": 10, "views_unique": 8, "clones_unique": 7}], "stars": 1, "forks": 0, "recent_views": 265, "recent_unique_views": 97, "recent_clones": 187, "recent_unique_clones": 104, "total_views": 320, "total_clones": 191}, {"repo": "ing-gom/sts2-undo-mod", "name": "sts2-undo-mod", "color": "#6639ba", "daily": [{"date": "2026-05-05", "views_total": 38, "clones_total": 1, "views_unique": 8, "clones_unique": 1}, {"date": "2026-05-06", "views_total": 2, "clones_total": 30, "views_unique": 2, "clones_unique": 8}, {"date": "2026-05-07", "views_total": 11, "clones_total": 20, "views_unique": 1, "clones_unique": 12}, {"date": "2026-05-08", "views_total": 30, "clones_total": 4, "views_unique": 2, "clones_unique": 4}, {"date": "2026-05-09", "views_total": 13, "clones_total": 1, "views_unique": 3, "clones_unique": 1}, {"date": "2026-05-10", "views_total": 4, "clones_total": 0, "views_unique": 3, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 5, "clones_total": 1, "views_unique": 3, "clones_unique": 1}, {"date": "2026-05-12", "views_total": 1, "clones_total": 3, "views_unique": 1, "clones_unique": 3}, {"date": "2026-05-13", "views_total": 3, "clones_total": 0, "views_unique": 3, "clones_unique": 0}, {"date": "2026-05-14", "views_total": 19, "clones_total": 5, "views_unique": 2, "clones_unique": 5}, {"date": "2026-05-15", "views_total": 12, "clones_total": 2, "views_unique": 4, "clones_unique": 2}, {"date": "2026-05-16", "views_total": 2, "clones_total": 1, "views_unique": 1, "clones_unique": 1}, {"date": "2026-05-17", "views_total": 14, "clones_total": 2, "views_unique": 3, "clones_unique": 2}, {"date": "2026-05-18", "views_total": 3, "clones_total": 0, "views_unique": 2, "clones_unique": 0}], "stars": 0, "forks": 0, "recent_views": 117, "recent_unique_views": 28, "recent_clones": 39, "recent_unique_clones": 31, "total_views": 157, "total_clones": 70}, {"repo": "ing-gom/sts2-potion-drop-chance", "name": "sts2-potion-drop-chance", "color": "#1f883d", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 37, "clones_total": 124, "views_unique": 8, "clones_unique": 74}, {"date": "2026-05-09", "views_total": 10, "clones_total": 2, "views_unique": 4, "clones_unique": 2}, {"date": "2026-05-10", "views_total": 1, "clones_total": 9, "views_unique": 1, "clones_unique": 6}, {"date": "2026-05-11", "views_total": 0, "clones_total": 3, "views_unique": 0, "clones_unique": 3}, {"date": "2026-05-12", "views_total": 4, "clones_total": 5, "views_unique": 1, "clones_unique": 5}, {"date": "2026-05-13", "views_total": 0, "clones_total": 2, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-14", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-15", "views_total": 2, "clones_total": 0, "views_unique": 1, "clones_unique": 0}, {"date": "2026-05-16", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-18", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}], "stars": 0, "forks": 0, "recent_views": 54, "recent_unique_views": 15, "recent_clones": 147, "recent_unique_clones": 93, "total_views": 54, "total_clones": 147}, {"repo": "ing-gom/Sts2SilkenTressBackport", "name": "Sts2SilkenTressBackport", "color": "#bc4c00", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 8, "clones_total": 11, "views_unique": 4, "clones_unique": 11}, {"date": "2026-05-13", "views_total": 4, "clones_total": 0, "views_unique": 3, "clones_unique": 0}, {"date": "2026-05-14", "views_total": 5, "clones_total": 1, "views_unique": 2, "clones_unique": 1}, {"date": "2026-05-15", "views_total": 4, "clones_total": 0, "views_unique": 2, "clones_unique": 0}, {"date": "2026-05-16", "views_total": 3, "clones_total": 0, "views_unique": 3, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 1, "clones_total": 1, "views_unique": 1, "clones_unique": 1}, {"date": "2026-05-18", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}], "stars": 0, "forks": 0, "recent_views": 25, "recent_unique_views": 15, "recent_clones": 13, "recent_unique_clones": 13, "total_views": 25, "total_clones": 13}, {"repo": "ing-gom/sts2-orb-layout", "name": "sts2-orb-layout", "color": "#a40e26", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 5, "clones_total": 44, "views_unique": 3, "clones_unique": 26}, {"date": "2026-05-07", "views_total": 12, "clones_total": 4, "views_unique": 4, "clones_unique": 4}, {"date": "2026-05-08", "views_total": 1, "clones_total": 0, "views_unique": 1, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 5, "clones_total": 0, "views_unique": 2, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-11", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-12", "views_total": 0, "clones_total": 2, "views_unique": 0, "clones_unique": 2}, {"date": "2026-05-13", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-14", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-15", "views_total": 1, "clones_total": 0, "views_unique": 1, "clones_unique": 0}, {"date": "2026-05-16", "views_total": 1, "clones_total": 0, "views_unique": 1, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-18", "views_total": 1, "clones_total": 0, "views_unique": 1, "clones_unique": 0}], "stars": 0, "forks": 0, "recent_views": 21, "recent_unique_views": 10, "recent_clones": 9, "recent_unique_clones": 9, "total_views": 26, "total_clones": 53}, {"repo": "ing-gom/sts2-combat-ai", "name": "sts2-combat-ai", "color": "#bf3989", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-13", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-14", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-15", "views_total": 1, "clones_total": 12, "views_unique": 1, "clones_unique": 12}, {"date": "2026-05-16", "views_total": 1, "clones_total": 1339, "views_unique": 1, "clones_unique": 241}, {"date": "2026-05-17", "views_total": 0, "clones_total": 131, "views_unique": 0, "clones_unique": 51}, {"date": "2026-05-18", "views_total": 15, "clones_total": 438, "views_unique": 2, "clones_unique": 220}], "stars": 0, "forks": 0, "recent_views": 17, "recent_unique_views": 4, "recent_clones": 1920, "recent_unique_clones": 524, "total_views": 17, "total_clones": 1920}, {"repo": "ing-gom/claude-mod-skills", "name": "claude-mod-skills", "color": "#cf222e", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 3, "views_unique": 0, "clones_unique": 3}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-12", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-13", "views_total": 1, "clones_total": 18, "views_unique": 1, "clones_unique": 11}, {"date": "2026-05-14", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-15", "views_total": 1, "clones_total": 0, "views_unique": 1, "clones_unique": 0}, {"date": "2026-05-16", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-17", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-18", "views_total": 2, "clones_total": 27, "views_unique": 1, "clones_unique": 24}], "stars": 0, "forks": 0, "recent_views": 4, "recent_unique_views": 3, "recent_clones": 49, "recent_unique_clones": 39, "total_views": 4, "total_clones": 52}, {"repo": "ing-gom/Sts2MultiplayerSync", "name": "Sts2MultiplayerSync", "color": "#8250df", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-13", "views_total": 1, "clones_total": 45, "views_unique": 1, "clones_unique": 26}, {"date": "2026-05-14", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-15", "views_total": 3, "clones_total": 1, "views_unique": 1, "clones_unique": 1}, {"date": "2026-05-16", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-17", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}, {"date": "2026-05-18", "views_total": 0, "clones_total": 1, "views_unique": 0, "clones_unique": 1}], "stars": 0, "forks": 0, "recent_views": 4, "recent_unique_views": 2, "recent_clones": 50, "recent_unique_clones": 31, "total_views": 4, "total_clones": 50}, {"repo": "ing-gom/Sts2HostObserver", "name": "Sts2HostObserver", "color": "#0550ae", "daily": [{"date": "2026-05-05", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-13", "views_total": 0, "clones_total": 30, "views_unique": 0, "clones_unique": 19}, {"date": "2026-05-14", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-15", "views_total": 2, "clones_total": 1, "views_unique": 1, "clones_unique": 1}, {"date": "2026-05-16", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-18", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}], "stars": 0, "forks": 0, "recent_views": 2, "recent_unique_views": 1, "recent_clones": 31, "recent_unique_clones": 20, "total_views": 2, "total_clones": 31}, {"repo": "ing-gom/sts2-game-speed", "name": "sts2-game-speed", "color": "#9a6700", "daily": [{"date": "2026-05-06", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-07", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-08", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-09", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-10", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-11", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-12", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-13", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-14", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-15", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-16", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-17", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-18", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-19", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}, {"date": "2026-05-20", "views_total": 0, "clones_total": 0, "views_unique": 0, "clones_unique": 0}], "stars": 0, "forks": 0, "recent_views": 0, "recent_unique_views": 0, "recent_clones": 0, "recent_unique_clones": 0, "total_views": 0, "total_clones": 0}]</script>
+<script>
+const REPO_DATA = JSON.parse(document.getElementById('repo-data').textContent);
+const allDates = [...new Set(REPO_DATA.flatMap(r => (r.daily || []).map(d => d.date)))].sort();
+
+function rolling(values, window) {
+  const out = [];
+  for (let i = 0; i < values.length; i++) {
+    let sum = 0, n = 0;
+    for (let j = Math.max(0, i - window + 1); j <= i; j++) {
+      if (values[j] != null) { sum += values[j]; n++; }
+    }
+    out.push(n ? sum / n : 0);
+  }
+  return out;
+}
+
+let trendChart, totalsChart;
+let smoothMode = false;
+let stackMode = false;
+
+function buildTrendDatasets(metric) {
+  return REPO_DATA.map(r => {
+    const byDate = Object.fromEntries((r.daily || []).map(d => [d.date, d[metric]]));
+    let series = allDates.map(d => byDate[d] ?? 0);
+    if (smoothMode) series = rolling(series, 7);
+    return {
+      label: r.name,
+      data: series,
+      borderColor: r.color,
+      backgroundColor: stackMode ? r.color + 'cc' : r.color,
+      tension: 0.25,
+      borderWidth: 1.5,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      fill: stackMode,
+    };
+  });
+}
+
+function renderTrend() {
+  const metric = document.getElementById('trendMetric').value;
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: { labels: allDates, datasets: buildTrendDatasets(metric) },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd' },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+        },
+        y: {
+          beginAtZero: true,
+          stacked: stackMode,
+          ticks: { precision: 0 },
+        },
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } } },
+      },
+    },
+  });
+}
+
+function renderTotals() {
+  const metric = document.getElementById('totalMetric').value;
+  if (totalsChart) totalsChart.destroy();
+  const sorted = [...REPO_DATA].sort((a, b) => (b[metric] ?? 0) - (a[metric] ?? 0));
+  totalsChart = new Chart(document.getElementById('totalsChart'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(r => r.name),
+      datasets: [{
+        label: metric,
+        data: sorted.map(r => r[metric] ?? 0),
+        backgroundColor: sorted.map(r => r.color),
+        borderRadius: 3,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
+      plugins: { legend: { display: false } },
+    },
+  });
+}
+
+document.getElementById('trendMetric').addEventListener('change', renderTrend);
+document.getElementById('totalMetric').addEventListener('change', renderTotals);
+document.getElementById('toggleSmooth').addEventListener('click', e => {
+  smoothMode = !smoothMode;
+  e.currentTarget.classList.toggle('active', smoothMode);
+  renderTrend();
+});
+document.getElementById('toggleStack').addEventListener('click', e => {
+  stackMode = !stackMode;
+  e.currentTarget.classList.toggle('active', stackMode);
+  renderTrend();
+});
+
+renderTrend();
+renderTotals();
+</script>
 </body>
 </html>
