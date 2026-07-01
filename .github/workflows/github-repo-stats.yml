@@ -7,25 +7,34 @@ on:
   workflow_dispatch:
 
 jobs:
+  # ing-gom 의 public·비archived·비fork 레포를 매 실행마다 조회해 matrix 를 동적 생성.
+  # 새 레포 공개 시 별도 편집 없이 다음 실행부터 자동 편입된다.
+  discover:
+    runs-on: ubuntu-22.04
+    outputs:
+      repos: ${{ steps.list.outputs.repos }}
+    steps:
+      - name: List public repos
+        id: list
+        env:
+          GH_TOKEN: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+        run: |
+          repos=$(gh repo list ing-gom \
+            --visibility public --no-archived --source -L 300 \
+            --json nameWithOwner \
+            --jq '[.[].nameWithOwner] | map(select(. != "ing-gom/repo-stats")) | sort')
+          echo "discovered:"; echo "$repos"
+          echo "repos=$(echo "$repos" | jq -c .)" >> "$GITHUB_OUTPUT"
+
   stats:
+    needs: discover
     runs-on: ubuntu-22.04
     strategy:
       # 동일 데이터 브랜치에 동시 push 충돌 방지
       max-parallel: 1
       fail-fast: false
       matrix:
-        repository:
-          - ing-gom/sts2-card-advisor
-          - ing-gom/sts2-combat-ai
-          - ing-gom/Sts2SkinManager
-          - ing-gom/sts2-game-speed
-          - ing-gom/sts2-undo-mod
-          - ing-gom/claude-mod-skills
-          - ing-gom/Sts2HostObserver
-          - ing-gom/Sts2MultiplayerSync
-          - ing-gom/Sts2SilkenTressBackport
-          - ing-gom/sts2-potion-drop-chance
-          - ing-gom/sts2-orb-layout
+        repository: ${{ fromJSON(needs.discover.outputs.repos) }}
     name: ${{ matrix.repository }}
     steps:
       - uses: jgehrcke/github-repo-stats@RELEASE
@@ -35,7 +44,7 @@ jobs:
           databranch: github-repo-stats
 
   aggregate-index:
-    needs: stats
+    needs: [discover, stats]
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -53,6 +62,7 @@ jobs:
         working-directory: data
         env:
           GH_TOKEN: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+          REPOS_JSON: ${{ needs.discover.outputs.repos }}
         run: python ../scripts/generate_index.py
 
       - name: Commit and push

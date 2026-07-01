@@ -11,27 +11,53 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-REPOS = [
-    "ing-gom/sts2-card-advisor",
-    "ing-gom/sts2-combat-ai",
-    "ing-gom/Sts2SkinManager",
-    "ing-gom/sts2-game-speed",
-    "ing-gom/sts2-undo-mod",
-    "ing-gom/claude-mod-skills",
-    "ing-gom/Sts2HostObserver",
-    "ing-gom/Sts2MultiplayerSync",
-    "ing-gom/Sts2SilkenTressBackport",
-    "ing-gom/sts2-potion-drop-chance",
-    "ing-gom/sts2-orb-layout",
-]
-
-COLORS = [
-    "#0969da", "#bf3989", "#1a7f37", "#9a6700", "#6639ba",
-    "#cf222e", "#0550ae", "#8250df", "#bc4c00", "#1f883d",
-    "#a40e26",
-]
-
 TOKEN = os.environ.get("GH_TOKEN", "")
+
+
+def get_repos():
+    """Repo list, in priority order:
+
+    1. REPOS_JSON env (JSON array) — passed from the workflow's `discover` job,
+       so newly-public repos are picked up without editing this file.
+    2. Fallback: whatever repos already have data on the checked-out data branch
+       (``<owner>/<repo>/ghrs-data/views_clones_aggregate.csv``).
+    """
+    env = os.environ.get("REPOS_JSON", "").strip()
+    if env:
+        try:
+            repos = json.loads(env)
+            if repos:
+                return repos
+        except json.JSONDecodeError as e:
+            print(f"[warn] REPOS_JSON parse failed, falling back to data dirs: {e}")
+    found = sorted(
+        f"{p.parts[0]}/{p.parts[1]}"
+        for p in Path(".").glob("*/*/ghrs-data/views_clones_aggregate.csv")
+    )
+    return found
+
+
+def color_for(idx: int) -> str:
+    """Distinct 6-digit hex per repo via golden-angle hue rotation.
+
+    Kept as hex (not hsl()) because the front-end appends 'cc' for the stacked
+    fill alpha, which only works on hex.
+    """
+    hue = (idx * 137.508) % 360.0
+    return _hsl_to_hex(hue, 0.62, 0.46)
+
+
+def _hsl_to_hex(h: float, s: float, l: float) -> str:
+    c = (1 - abs(2 * l - 1)) * s
+    x = c * (1 - abs((h / 60.0) % 2 - 1))
+    m = l - c / 2
+    r, g, b = {
+        0: (c, x, 0), 1: (x, c, 0), 2: (0, c, x),
+        3: (0, x, c), 4: (x, 0, c), 5: (c, 0, x),
+    }[int(h // 60) % 6]
+    return "#{:02x}{:02x}{:02x}".format(
+        round((r + m) * 255), round((g + m) * 255), round((b + m) * 255)
+    )
 
 
 def fetch_meta(repo: str):
@@ -322,14 +348,15 @@ renderTotals();
 
 
 def main():
+    repos = get_repos()
     items = []
-    for idx, repo in enumerate(REPOS):
+    for idx, repo in enumerate(repos):
         agg = read_aggregate(repo) or {}
         meta = fetch_meta(repo)
         items.append({
             "repo": repo,
             "name": repo.split("/")[-1],
-            "color": COLORS[idx % len(COLORS)],
+            "color": color_for(idx),
             **meta,
             **agg,
         })
