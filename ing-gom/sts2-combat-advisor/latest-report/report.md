@@ -1,5 +1,5 @@
 % Statistics for ing-gom/sts2-combat-advisor
-% Generated for [ing-gom/sts2-combat-advisor](https://github.com/ing-gom/sts2-combat-advisor) with [jgehrcke/github-repo-stats](https://github.com/jgehrcke/github-repo-stats) at 2026-07-01 12:51 UTC.
+% Generated for [ing-gom/sts2-combat-advisor](https://github.com/ing-gom/sts2-combat-advisor) with [jgehrcke/github-repo-stats](https://github.com/jgehrcke/github-repo-stats) at 2026-07-02 02:17 UTC.
 
 
 ## Views
